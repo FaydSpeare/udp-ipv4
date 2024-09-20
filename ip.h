@@ -3,7 +3,15 @@
 #include <stddef.h>
 
 typedef struct {
-    unsigned int version : 4, ihl : 4;
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    unsigned int version : 4;
+    unsigned int ihl : 4;
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+    unsigned int ihl : 4;
+    unsigned int version : 4;
+#else
+    #error "Endianness not defined!"
+#endif
     uint8_t tos; // Type of service
     uint16_t total_length;
     uint16_t id;
