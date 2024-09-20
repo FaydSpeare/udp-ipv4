@@ -1,30 +1,8 @@
 #include "ip.h"
-#include <endian.h>
+#include "byteorder.h"
 #include <stdio.h>
 #include <string.h>
 
-uint16_t swap_bytes16(uint16_t value) { return (value << 8) | (value >> 8); }
-
-uint32_t swap_bytes32(uint32_t value) {
-    return (value << 24) | ((value & 0xFF00) << 8) | ((value & 0xFF0000) >> 8) |
-           (value >> 24);
-}
-
-uint16_t identity16(uint16_t value) { return value; }
-
-uint32_t identity32(uint32_t value) { return value; }
-
-#if BYTE_ORDER == LITTLE_ENDIAN
-#define MAYBE_SWAP16 swap_bytes16
-#define MAYBE_SWAP32 swap_bytes32
-
-#elif BYTE_ORDER == BIG_ENDIAN
-#define MAYBE_SWAP16 identity16
-#define MAYBE_SWAP32 identity32
-
-#else
-#error "Unknown byte order"
-#endif
 
 void _print_addr(uint32_t addr) {
     printf(

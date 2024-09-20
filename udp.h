@@ -1,4 +1,4 @@
-
+#include "ip.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -13,5 +13,4 @@ typedef struct {
 void udp_print_header(udp_header* header);
 char* udp_extract_header(udp_header* header, char* buffer, size_t buffer_size);
 char* udp_write_header(udp_header* header, char* buffer, size_t buffer_size);
-bool udp_verify_checksum(udp_header* header);
-uint16_t udp_calculate_checksum(udp_header* header);
+uint16_t udp_calculate_checksum(ip_header *iphdr, udp_header *udphdr, char *data);
