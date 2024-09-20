@@ -8,6 +8,9 @@
 #define PORT 7777
 
 int main(void) {
+    printf("host endianness: %d\n", __BYTE_ORDER__);
+    printf("little endian: %d\n", __ORDER_LITTLE_ENDIAN__);
+    printf("big endian: %d\n", __ORDER_BIG_ENDIAN__);
 
     int sockfd;
     struct sockaddr_in serveraddr;
@@ -40,6 +43,7 @@ int main(void) {
             return EXIT_FAILURE;
         }
 
+        printf("\n");
         printf("Received %d bytes from %s:%d\n", bytes_received,
                inet_ntoa(peeraddr.sin_addr), ntohs(peeraddr.sin_port));
 

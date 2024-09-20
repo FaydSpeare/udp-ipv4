@@ -3,10 +3,10 @@
 #include <stddef.h>
 
 typedef struct {
-#if BYTE_ORDER == BIG_ENDIAN
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     unsigned int version : 4;
     unsigned int ihl : 4;
-#elif BYTE_ORDER == LITTLE_ENDIAN
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
     unsigned int ihl : 4;
     unsigned int version : 4;
 #else
