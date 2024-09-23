@@ -14,3 +14,4 @@ void udp_print_header(udp_header* header);
 char* udp_extract_header(udp_header* header, char* buffer, size_t buffer_size);
 char* udp_write_header(udp_header* header, char* buffer, size_t buffer_size);
 uint16_t udp_calculate_checksum(ip_header *iphdr, udp_header *udphdr, char *data);
+char* udp_send(uint32_t dst_address, uint16_t dst_port, char *message, size_t message_size);

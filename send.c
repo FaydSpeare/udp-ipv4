@@ -35,36 +35,14 @@ int main(void) {
 
     char buffer[1024];
     char message[] = "Szia Dorka :)!";
-
-    ip_header iph;
-    iph.version = 4;
-    iph.ihl = 5;
-    iph.tos = 0;
-    iph.total_length = MAYBE_SWAP16(20 + 8 + strlen(message));
-    iph.id = MAYBE_SWAP16(0);
-    iph.fragment_offset = MAYBE_SWAP16(0);
-    iph.ttl = 48;
-    iph.protocol = 17;
-    iph.src_address = MAYBE_SWAP32(0x7f000001);
-    iph.dst_address = MAYBE_SWAP32(0x7f000001);
-    iph.checksum = MAYBE_SWAP16(ip_calculate_checksum(&iph));
-
-    udp_header udph;
-    udph.src_port = MAYBE_SWAP16(0);
-    udph.dst_port = MAYBE_SWAP16(PORT);
-    udph.length = MAYBE_SWAP16(22);
-    udph.checksum = MAYBE_SWAP16(udp_calculate_checksum(&iph, &udph, message));
-
-    ip_write_header(&iph, buffer, 100);
-    udp_write_header(&udph, buffer + 20, 100);
-    memcpy(buffer + 28, message, strlen(message));
+    char* msg = udp_send(0x7f000001, PORT, message, strlen(message)); 
 
     for (int i = 0; i < 20 + 8 + strlen(message); i++) {
-        print_bits(buffer[i]);
+        print_bits(msg[i]);
     }
 
     if (sendto(
-            sockfd, buffer, 20 + 8 + strlen(message), 0,
+            sockfd, msg, 20 + 8 + strlen(message), 0,
             (struct sockaddr*)&serveraddr, sizeof(serveraddr)
         ) < 0) {
         perror("sendto error");
@@ -72,5 +50,6 @@ int main(void) {
     }
 
     printf("Message sent!\n");
+    free(msg);
     return EXIT_SUCCESS;
 }
