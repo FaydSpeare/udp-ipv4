@@ -1,16 +1,19 @@
-#include "udp.h"
+#include "../udp.h"
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
 
-#define PORT 7777
+#define BUFFER_SIZE 1024
 
-int main(void) {
-    printf("host endianness: %d\n", __BYTE_ORDER__);
-    printf("little endian: %d\n", __ORDER_LITTLE_ENDIAN__);
-    printf("big endian: %d\n", __ORDER_BIG_ENDIAN__);
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        printf("Usage: %s <port>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    int port = atoi(argv[1]);
 
     int sockfd;
     struct sockaddr_in serveraddr;
@@ -21,7 +24,7 @@ int main(void) {
     }
 
     serveraddr.sin_family = AF_INET;
-    serveraddr.sin_port = htons(PORT);
+    serveraddr.sin_port = htons(port);
     serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(sockfd, (struct sockaddr*)&serveraddr, sizeof(serveraddr)) < 0) {
@@ -29,7 +32,7 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     struct sockaddr_in peeraddr;
     socklen_t peeraddr_len;
     while (1) {
@@ -43,9 +46,10 @@ int main(void) {
             return EXIT_FAILURE;
         }
 
-        printf("\n");
-        printf("Received %d bytes from %s:%d\n", bytes_received,
-               inet_ntoa(peeraddr.sin_addr), ntohs(peeraddr.sin_port));
+        printf(
+            "Received %d bytes from %s\n", bytes_received,
+            inet_ntoa(peeraddr.sin_addr)
+        );
 
         ip_header iph;
         udp_header udph;
@@ -59,8 +63,10 @@ int main(void) {
         uint16_t ip_checksum = ip_calculate_checksum(&iph);
         printf(" IP checksum: %hu\n", ip_checksum);
 
-        uint16_t udp_checksum = udp_calculate_checksum(&iph, &udph, buffer + 28);
+        uint16_t udp_checksum =
+            udp_calculate_checksum(&iph, &udph, buffer + 28);
         printf("UDP checksum: %hu\n", udp_checksum);
+        printf("\n\n");
     }
 
     return EXIT_SUCCESS;

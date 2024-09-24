@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 uint16_t swap_bytes16(uint16_t value);
 uint32_t swap_bytes32(uint32_t value);
@@ -14,3 +15,5 @@ uint32_t identity32(uint32_t value);
 #else
 #error "Unknown byte order"
 #endif
+
+void print_endianess(void);

@@ -1,8 +1,30 @@
 #include "ip.h"
 #include "byteorder.h"
+#include <arpa/inet.h>
+#include <ifaddrs.h>
+#include <net/if.h>
 #include <stdio.h>
 #include <string.h>
 
+uint32_t get_local_ipv4_address(void) {
+    struct ifaddrs* ifaddr;
+    if (getifaddrs(&ifaddr) == -1) {
+        perror("getifaddrs");
+        return 0;
+    }
+    for (struct ifaddrs* ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == NULL) {
+            continue;
+        }
+        struct sockaddr* addr = ifa->ifa_addr;
+        struct sockaddr_in* addr_in = (struct sockaddr_in*)addr;
+        if (addr_in->sin_family == AF_INET &&
+            !(ifa->ifa_flags & IFF_LOOPBACK)) {
+            return addr_in->sin_addr.s_addr;
+        }
+    }
+    return 0;
+}
 
 void _print_addr(uint32_t addr) {
     printf(

@@ -9,3 +9,9 @@ uint32_t swap_bytes32(uint32_t value) {
 
 uint16_t identity16(uint16_t value) { return value; }
 uint32_t identity32(uint32_t value) { return value; }
+
+void print_endianess(void) {
+    printf("host endianness: %d\n", __BYTE_ORDER__);
+    printf("little endian: %d\n", __ORDER_LITTLE_ENDIAN__);
+    printf("big endian: %d\n", __ORDER_BIG_ENDIAN__);
+}

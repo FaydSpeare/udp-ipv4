@@ -23,6 +23,7 @@ typedef struct {
     uint32_t dst_address;
 } ip_header;
 
+uint32_t get_local_ipv4_address(void);
 void ip_print_header(ip_header *header);
 char* ip_extract_header(ip_header *header, char *buffer, size_t buffer_size);
 char* ip_write_header(ip_header *header, char *buffer, size_t buffer_size);
